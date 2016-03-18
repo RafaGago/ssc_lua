@@ -1,0 +1,10 @@
+*~
+build/linux
+build/windows
+build/stage
+build/premake/premake5
+dependencies/code/LuaJIT-2.0.4
+eclipse/.metadata
+eclipse/RemoteSystemsTempFiles
+src/ssc_lua/lua_api.c
+

@@ -1,0 +1,4 @@
+[submodule "dependencies/ssc"]
+	path = dependencies/ssc
+	url = https://github.com/RafaGago/ssc.git
+  branch = master
