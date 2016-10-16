@@ -32,6 +32,11 @@ str = str:gsub ("([^\\])\"", "%1\\\"")
 str = str:gsub ("([^\n]*)\n", "\"%1\\n\"\n")
 str = str:gsub (string.rep ("%-", 80), "")
 
+--remove sinle line Lua comments
+str = str:gsub ("^(\"%-%-[^\n]*\n)", "") 
+str = str:gsub ("\n(\"%-%-[^\n]*)", "")
+str = str:gsub ("(%-%-[^\"]*)", "")
+
 newln = "\\n"
 quote = "\""
 
@@ -44,6 +49,7 @@ sep = "\n/*" .. string.rep ("%-", 76) .. "*/\n"
 
 str = str:gsub ("\n\n", sep)
 str = str:gsub ("\n\n", sep)
+
 str = 
   "/*This file is auto-generated; don't edit*/\n\n"..
   "char const* "..c_str_name.." = \n" .. 
