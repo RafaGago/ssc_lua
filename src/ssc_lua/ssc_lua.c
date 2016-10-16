@@ -691,4 +691,12 @@ SSC_EXPORT
   free (gc);
 }
 /*----------------------------------------------------------------------------*/
+SSC_EXPORT
+  void ssc_sim_before_fiber_context_switch (void* sim_context)
+{
+  ssc_lua_global* gc = (ssc_lua_global*) sim_context;
+  /*TODO: lua_yield may be called here after refactoring the API to be more
+      efficient */
+}
+/*----------------------------------------------------------------------------*/
 

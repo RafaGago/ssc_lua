@@ -77,6 +77,11 @@ ffi.cdef[[
 ]]
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+-- TODO: There is a lot of unnecessary yielding. Parameter can be pushed to the
+--   stack in some cases. In other cases the C function can return a value
+--   saying when the Lua env runtime to yield (e.g. not yielding when a queue
+--   has data, yielding when blocking on the queue)
+
 function sim_yield()
   ffi.C.sim_yield (current_fiber_handle)
   coroutine.yield()
