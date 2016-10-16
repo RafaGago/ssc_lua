@@ -77,11 +77,9 @@ ffi.cdef[[
 ]]
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
--- TODO: There is a lot of unnecessary yielding. Parameter can be pushed to the
---   stack in some cases. In other cases the C function can return a value
---   saying when the Lua env runtime to yield (e.g. not yielding when a queue
---   has data, yielding when blocking on the queue)
-
+-- Don't be tempted to try to optimize these many coroutine.yield() calls
+-- unfortunately LuaJIT can't yield within a ffi.C function call
+-- http://www.freelists.org/post/luajit/Yielding-Within-FFI-call,3
 function sim_yield()
   ffi.C.sim_yield (current_fiber_handle)
   coroutine.yield()
