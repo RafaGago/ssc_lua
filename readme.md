@@ -16,12 +16,20 @@ Description
 A working implementation of ssc where the simulations are written in LUA.
 LuaJIT is used as Lua implementation.
 
-TODO: Add example program
+There is a simple example program called "ssc_lua_example" (it builds on
+the bin folder of the build/stage folder) which takes a Lua simulation
+script and allows to send data to the simulation from the command line.
+
+A good file to start playing might be "queue_match_test.lua", which is
+located on the same path as the console program.
+
+The program has the limitation that it can just send data to the fiber
+group 0 (referred as 1 from the Lua/simulation side).
 
 Current status
 ==============
 
-Very basic testing done.
+Very basic testing done. Everything looks fine so far.
 
 Build (Linux)
 =============
