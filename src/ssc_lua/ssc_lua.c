@@ -179,27 +179,27 @@ BL_VISIBILITY_DEFAULT void sim_yield (void* h)
 BL_VISIBILITY_DEFAULT void sim_wake (void* h, uword_d2 wait_id, uword_d2 count)
 {
   ssc_lua_handle* lh = (ssc_lua_handle*) h;
-  lh->op               = fop_wake;
-  lh->d.wake.wait_id   = wait_id;
-  lh->d.wake.count     = count;
+  lh->op             = fop_wake;
+  lh->d.wake.wait_id = wait_id;
+  lh->d.wake.count   = count;
 }
 /*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_wait(
   void* h, bool* timedout, uword_d2 wait_id, toffset us
   )
 {
-  ssc_lua_handle* lh = (ssc_lua_handle*) h;
-  lh->op               = fop_wait;
-  lh->d.wait.wait_id   = wait_id;
-  lh->d.wait.us        = us;
-  lh->d.wait.timedout  = timedout;
+  ssc_lua_handle* lh  = (ssc_lua_handle*) h;
+  lh->op              = fop_wait;
+  lh->d.wait.wait_id  = wait_id;
+  lh->d.wait.us       = us;
+  lh->d.wait.timedout = timedout;
 }
 /*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_delay (void* h, toffset us)
 {
   ssc_lua_handle* lh = (ssc_lua_handle*) h;
-  lh->op               = fop_delay;
-  lh->d.delay.us       = us;
+  lh->op             = fop_delay;
+  lh->d.delay.us     = us;
 }
 /*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT sim_tstamp sim_timestamp_get (void* h)
@@ -240,7 +240,7 @@ BL_VISIBILITY_DEFAULT void sim_produce_bytes(
   void* h, u8 const* dat, u16 dat_size
   )
 {
-  ssc_lua_handle* lh         = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh           = (ssc_lua_handle*) h;
   lh->op                       = fop_produce_bytes;
   lh->d.produce_bytes.dat      = dat;
   lh->d.produce_bytes.dat_size = dat_size;
@@ -248,7 +248,7 @@ BL_VISIBILITY_DEFAULT void sim_produce_bytes(
 /*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_produce_error (void* h, bl_err err)
 {
-  ssc_lua_handle* lh    = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh      = (ssc_lua_handle*) h;
   lh->op                  = fop_produce_error;
   lh->d.produce_error.err = err;
 }
@@ -257,7 +257,7 @@ BL_VISIBILITY_DEFAULT void sim_produce_string(
   void* h, char const* str, u16 str_size_no_null
   )
 {
-  ssc_lua_handle* lh                  = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh                    = (ssc_lua_handle*) h;
   lh->op                                = fop_produce_string;
   lh->d.produce_string.str              = str;
   lh->d.produce_string.str_size_no_null = str_size_no_null;
@@ -267,7 +267,7 @@ BL_VISIBILITY_DEFAULT void sim_consume(
   void* h, u8** dat, u16* dat_size
   )
 {
-  ssc_lua_handle* lh   = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh     = (ssc_lua_handle*) h;
   lh->op                 = fop_consume;
   lh->d.consume.dat      = dat;
   lh->d.consume.dat_size = dat_size;
@@ -277,7 +277,7 @@ BL_VISIBILITY_DEFAULT void sim_consume_match(
   void* h, u8** dat, u16* dat_size, u8 const* match, u16 match_size
   )
 {
-  ssc_lua_handle* lh       = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh         = (ssc_lua_handle*) h;
   lh->op                     = fop_consume_match;
   lh->d.consume_m.dat        = dat;
   lh->d.consume_m.dat_size   = dat_size;
@@ -309,7 +309,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume(
   void* h, u8** dat, u16* dat_size, toffset us
   )
 {
-  ssc_lua_handle* lh     = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh       = (ssc_lua_handle*) h;
   lh->op                   = fop_consume;
   lh->d.consume_t.dat      = dat;
   lh->d.consume_t.dat_size = dat_size;
@@ -320,7 +320,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume_match(
   void* h, u8** dat, u16* dat_size, u8 const* match, u16 match_size, toffset us
   )
 {
-  ssc_lua_handle* lh        = (ssc_lua_handle*) h;
+  ssc_lua_handle* lh          = (ssc_lua_handle*) h;
   lh->op                      = fop_consume_match;
   lh->d.consume_tm.dat        = dat;
   lh->d.consume_tm.dat_size   = dat_size;
@@ -516,7 +516,7 @@ SSC_EXPORT
   bl_assert (passed_data && sim_context);
   ssc_lua_global* gc      = (ssc_lua_global*) malloc (sizeof *gc);
   ssc_lua_passed_data* pd = (ssc_lua_passed_data*) passed_data;
-  *sim_context              = nullptr;
+  *sim_context            = nullptr;
 
   if (!gc) {
     return bl_alloc;
@@ -526,8 +526,8 @@ SSC_EXPORT
   if (err) {
     goto global_free;
   }
-  err       = bl_error;
-  gc->lua   = luaL_newstate();
+  err     = bl_error;
+  gc->lua = luaL_newstate();
   luaL_openlibs (gc->lua);
   luaopen_pack (gc->lua);
 

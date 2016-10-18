@@ -221,8 +221,3 @@ project (projname.."_example")
   links {
     projname.."_static",
     }
---  postbuildcommands {
---    "{COPY} "..repo_test_src.."/"..projname.."/*.lua "..
---      "%{cfg.buildtarget.directory}"
---    }
-
