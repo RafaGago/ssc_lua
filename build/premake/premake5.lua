@@ -54,10 +54,10 @@ if os.get() == "windows" then
 end
 os.execute (autogen_lua_api_cmd)
 
-solution "build"  
+solution "build"
   configurations { "release", "debug" }
   location (build)
-  
+
 filter {"system:linux"}
   defines {"BL_USE_CLOCK_MONOTONIC_RAW"}
 
@@ -65,12 +65,12 @@ filter {"system:not windows"}
   postbuildcommands {
     "cd %{cfg.buildtarget.directory} && "..
     "ln -sf %{cfg.buildtarget.name} "..
-    "%{cfg.buildtarget.name:gsub ('.%d+.%d+.%d+', '')}"    
+    "%{cfg.buildtarget.name:gsub ('.%d+.%d+.%d+', '')}"
     }
- 
+
 filter {"configurations:*"}
   flags {"MultiProcessorCompile"}
-  includedirs { 
+  includedirs {
     repo_include,
     repo_src,
     base_library_include,
@@ -78,7 +78,7 @@ filter {"configurations:*"}
     lua_include,
     }
 
-filter {"configurations:release"}  
+filter {"configurations:release"}
   defines {"NDEBUG"}
   optimize "On"
 
@@ -131,10 +131,10 @@ filter {"configurations:release", "action:gmake", "kind:ConsoleApp"}
 
 filter {"action:gmake", "kind:ConsoleApp"}
   links {"pthread", "rt", "m", "dl"}
- 
+
 filter {"kind:SharedLib", "configurations:debug", "system:not windows"}
   targetextension (".so"..".d"..version)
-  
+
 filter {"kind:SharedLib", "configurations:release", "system:not windows"}
     targetextension (".so"..version)
 
@@ -143,7 +143,7 @@ filter {"kind:StaticLib", "configurations:debug", "system:not windows"}
 
 filter {"kind:StaticLib", "configurations:debug"}
   targetdir (stage.."/debug/lib")
-  
+
 filter {"kind:StaticLib", "configurations:release", "system:not windows"}
   targetextension (".a"..version )
 
@@ -155,20 +155,20 @@ filter {"kind:ConsoleApp", "configurations:debug", "system:not windows"}
 
 filter {"kind:ConsoleApp", "configurations:debug"}
   targetdir (stage.."/debug/bin")
-  
+
 filter {"kind:ConsoleApp", "configurations:release", "system:not windows"}
   targetextension (version )
 
 filter {"kind:ConsoleApp", "configurations:release"}
-  targetdir (stage.."/release/bin")  
+  targetdir (stage.."/release/bin")
 
-filter {"action:gmake"}  
+filter {"action:gmake"}
   buildoptions {"-std=gnu11"}
   buildoptions {"-Wfatal-errors"}
-  
+
 filter {"action:gmake", "kind:*Lib"}
   buildoptions {"-fvisibility=hidden"}
-  
+
 filter {"action:vs*"}
   buildoptions {"/TP"}
 
@@ -176,7 +176,7 @@ project (projname.."_static")
   kind "StaticLib"
   defines {"SSC_PRIVATE_SYMS", "SSC_SIM_PRIVATE_SYMS"}
   language "C"
-  files { 
+  files {
     repo_src.."/**.c",
     }
   prebuildcommands { autogen_lua_api_cmd }
@@ -185,7 +185,7 @@ project (projname)
   kind "SharedLib"
   defines { "SSC_SHAREDLIB", "SSC_SHAREDLIB_COMPILATION"}
   language "C"
-  files { 
+  files {
     repo_src.."/**.c",
     }
   prebuildcommands {
@@ -196,10 +196,10 @@ project (projname)
 project (projname.."_test")
   kind "ConsoleApp"
   language "C"
-  files { 
+  files {
     repo_test_src.."/**.c",
     }
-  includedirs { 
+  includedirs {
     repo_test_src,
     cmocka_include
     }
@@ -215,9 +215,13 @@ project (projname.."_test")
 project (projname.."_example")
   kind "ConsoleApp"
   language "C"
-  files { 
+  files {
     repo_example_src.."/**.c",
-    }  
+    }
   links {
     projname.."_static",
+    }
+  postbuildcommands {
+    "{COPY} "..repo_example_src.."/"..projname.."/*.lua "..
+      "%{cfg.buildtarget.directory}"
     }
