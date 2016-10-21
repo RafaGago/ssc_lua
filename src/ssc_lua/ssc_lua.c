@@ -310,7 +310,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume(
   )
 {
   ssc_lua_handle* lh       = (ssc_lua_handle*) h;
-  lh->op                   = fop_consume;
+  lh->op                   = fop_timed_consume;
   lh->d.consume_t.dat      = dat;
   lh->d.consume_t.dat_size = dat_size;
   lh->d.consume_t.us       = us;
@@ -321,7 +321,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume_match(
   )
 {
   ssc_lua_handle* lh          = (ssc_lua_handle*) h;
-  lh->op                      = fop_consume_match;
+  lh->op                      = fop_timed_consume_match;
   lh->d.consume_tm.dat        = dat;
   lh->d.consume_tm.dat_size   = dat_size;
   lh->d.consume_tm.match      = match;
@@ -341,7 +341,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume_match_mask(
   )
 {
   ssc_lua_handle* lh           = (ssc_lua_handle*) h;
-  lh->op                       = fop_consume_match_mask;
+  lh->op                       = fop_timed_consume_match_mask;
   lh->d.consume_tmm.dat        = dat;
   lh->d.consume_tmm.dat_size   = dat_size;
   lh->d.consume_tmm.match      = match;

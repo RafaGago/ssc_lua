@@ -142,9 +142,12 @@ function sim_timed_consume (timeout_us)
   local dat_size = ffi.new ("u16[1]")
   ffi.C.sim_timed_consume (current_fiber_handle, dat, dat_size, timeout_us)
   coroutine.yield()
-  ret = ffi.string (dat[0], dat_size[0])
-  ffi.C.sim_drop_input_head_private (current_fiber_handle)
-  coroutine.yield()
+  local ret
+  if dat_size[0] ~= 0 then
+    ret = ffi.string (dat[0], dat_size[0])
+    ffi.C.sim_drop_input_head_private (current_fiber_handle)
+    coroutine.yield()
+  end
   return ret
 end
 --------------------------------------------------------------------------------
@@ -155,9 +158,12 @@ function sim_timed_consume_match (match, timeout_us)
     current_fiber_handle, dat, dat_size, match, match:len(), timeout_us
     )
   coroutine.yield()
-  ret = ffi.string (dat[0], dat_size[0])
-  ffi.C.sim_drop_input_head_private (current_fiber_handle)
-  coroutine.yield()
+  local ret
+  if dat_size[0] ~= 0 then
+    ret = ffi.string (dat[0], dat_size[0])
+    ffi.C.sim_drop_input_head_private (current_fiber_handle)
+    coroutine.yield()
+  end
   return ret
 end
 --------------------------------------------------------------------------------
@@ -175,9 +181,12 @@ function sim_timed_consume_match_mask (match, mask, timeout_us)
     timeout_us
     )
   coroutine.yield()
-  ret = ffi.string (dat[0], dat_size[0])
-  ffi.C.sim_drop_input_head_private (current_fiber_handle)
-  coroutine.yield()
+  local ret
+  if dat_size[0] ~= 0 then
+    ret = ffi.string (dat[0], dat_size[0])
+    ffi.C.sim_drop_input_head_private (current_fiber_handle)
+    coroutine.yield()
+  end
   return ret
 end
 --------------------------------------------------------------------------------
