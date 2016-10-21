@@ -379,7 +379,7 @@ static void fiber_function(
     if (resume_status != 0 && resume_status != LUA_YIELD) {
       fprintf(
         stderr,
-        "lua err on fiber %s: %s",
+        "terminating fiber \"%s\" because of Lua runtime error:\n%s\n",
         fd->name,
         lua_tostring (fd->thread, -1)
         );

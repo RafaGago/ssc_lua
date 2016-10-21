@@ -25,7 +25,7 @@ void print_usage()
 /*---------------------------------------------------------------------------*/
 void print_time (program* p, tstamp t)
 {
-  toffset toff = bl_tstamp_to_usec (t - p->startup);  
+  toffset toff = bl_tstamp_to_usec (t - p->startup);
   toffset sec  = toff / usec_in_sec;
   toffset usec = toff % usec_in_sec;
   /*TODO: provide tstamp formatters in time.h*/
@@ -53,22 +53,22 @@ void process_read_message (program* p, ssc_output_data* od)
     printf ("<- %s\n", str);
     break;
   }
-  case ssc_type_error: {    
+  case ssc_type_error: {
     bl_err      err;
     char const* errstr;
     ssc_output_read_as_error (od, &err, &errstr);
-    printf ("<- err: %s errstr: %s\n", bl_err_to_str (err), errstr);
+    printf ("<- err: %s, errstr: %s\n", bl_err_to_str (err), errstr);
     break;
   }
   default: break;
-  }  
+  }
 }
 /*---------------------------------------------------------------------------*/
 int write_console (void* context)
 {
   program* p = (program*) context;
   size_t size;
-  while (p->running) {    
+  while (p->running) {
     char* line = fgets (&p->send, arr_elems (p->send), stdin);
     if (!line) {
       fprintf (stderr, "fgets failed\n");
@@ -99,7 +99,7 @@ int write_console (void* context)
       continue;
     }
     print_time (p, bl_get_tstamp());
-    bl_err err = ssc_write (p->sim, 0, mem, (u16) ret);    
+    bl_err err = ssc_write (p->sim, 0, mem, (u16) ret);
     if (!err) {
       printf ("-> %s\n", line);
     }
@@ -111,13 +111,13 @@ int write_console (void* context)
 }
 /*---------------------------------------------------------------------------*/
 int main (int argc, char const* argv[])
-{  
+{
   struct program p;
   p.running = 1;
   if (argc != 2) {
     print_usage();
     return -1;
-  }  
+  }
   if (strcmp (argv[1], "help") == 0 || strcmp (argv[1], "--help") == 0) {
     print_usage();
     return 0;
@@ -148,11 +148,11 @@ int main (int argc, char const* argv[])
   int thr_err = bl_thread_init (&thr, write_console, &p);
   if (thr_err != 0) {
     fprintf (stderr, "unable to start console thread\n");
-    goto teardown;    
+    goto teardown;
   }
   ssc_output_data od[16];
   while (p.running) {
-    err = ssc_run_some (p.sim, 100);    
+    err = ssc_run_some (p.sim, 100);
     if (err && err != bl_timeout) {
       /*TODO*/
     }
@@ -162,7 +162,7 @@ int main (int argc, char const* argv[])
       process_read_message (&p, od + i);
       ssc_dealloc_read_data (p.sim, od + i);
     }
-  }  
+  }
 teardown:
   ssc_run_teardown (p.sim);
 destroy:
