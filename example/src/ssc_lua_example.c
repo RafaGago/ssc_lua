@@ -29,7 +29,7 @@ void print_time (program* p, tstamp t)
   toffset sec  = toff / usec_in_sec;
   toffset usec = toff % usec_in_sec;
   /*TODO: provide tstamp formatters in time.h*/
-  printf ("[%5u.%6u]", sec, usec);
+  printf ("[%05u.%06u]", sec, usec);
 }
 /*---------------------------------------------------------------------------*/
 void process_read_message (program* p, ssc_output_data* od)
