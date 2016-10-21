@@ -424,14 +424,14 @@ static void fiber_function(
     }
     case fop_produce_string: {
       u16   size   = lh.d.produce_string.str_size_no_null;
-      char* str_cp = (char*) malloc (size + 1);
+      char* str_cp = (char*) bl_alloc (&gc->alloc, size + 1);
       if (!str_cp) {
         log_error ("error allocating string, terminating fiber %s", name);
         goto fiber_end;
       }
       memcpy (str_cp, lh.d.produce_string.str, size);
       str_cp[size] = 0;
-      ssc_produce_dynamic_string (h, lh.d.produce_string.str, size + 1);
+      ssc_produce_dynamic_string (h, str_cp, size + 1);
       break;
     }
     case fop_consume: {
