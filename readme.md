@@ -37,17 +37,17 @@ Build (Linux)
 
 Be aware that cmocka used on base_library requires CMake.
 
-git submodule update --init --recursive
-
-cd dependencies
-
-./prepare_dependencies.sh
-
-cd ../build/premake
-
-premake5 gmake
-
-make -C ../linux config=release verbose=yes
+> git submodule update --init --recursive
+>
+> cd dependencies
+>
+> ./prepare_dependencies.sh
+>
+> cd ../build/premake
+>
+> premake5 gmake
+>
+> make -C ../linux config=release verbose=yes
 
 Build (Windows)
 ===============
