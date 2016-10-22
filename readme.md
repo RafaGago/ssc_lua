@@ -1,7 +1,7 @@
 Simulator Scheduler Lua (ssc_lua)
 =================================
 
-LUA binding for the simulator scheduler.
+LUA binding for the simulator scheduler ([ssc](https://github.com/RafaGago/ssc)).
 
 Special credit
 ==============
