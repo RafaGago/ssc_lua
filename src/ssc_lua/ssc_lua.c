@@ -47,9 +47,10 @@ typedef enum fiber_ops_e {
   fop_timed_consume,
   fop_timed_consume_match,
   fop_timed_consume_match_mask,
-  fop_drop_in_head,
-  fop_out_of_scope,
+  fop_sim_consume_all,
   fop_drop_input_head_private,
+
+  fop_out_of_scope,
 }
 fiber_ops_e;
 typedef uword fiber_ops;
@@ -351,6 +352,12 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume_match_mask(
   lh->d.consume_tmm.us         = us;
 }
 /*----------------------------------------------------------------------------*/
+BL_VISIBILITY_DEFAULT void sim_consume_all (void* h)
+{
+  ssc_lua_handle* lh = (ssc_lua_handle*) h;
+  lh->op = fop_sim_consume_all;
+}
+/*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_drop_input_head_private (void* h)
 {
   ssc_lua_handle* lh = (ssc_lua_handle*) h;
@@ -483,6 +490,10 @@ static void fiber_function(
         );
       *lh.d.consume_tmm.dat      = (u8*) memr16_beg (r);
       *lh.d.consume_tmm.dat_size = memr16_size (r);
+      break;
+    }
+    case fop_sim_consume_all: {
+      ssc_drop_all_input (h);
       break;
     }
     case fop_drop_input_head_private: {

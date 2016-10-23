@@ -123,8 +123,13 @@ end)
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "wait on sem 1", function()
   while true do
-    sem:timed_wait (0)
-    sim_produce_string ("semaphore signal received")
+    local unexpired = sem:timed_wait (200000)
+    if unexpired then
+      sim_produce_string ("semaphore signal received")
+    end
+    -- fibers not reading the queue must periodically call "sim_consume_all" to
+    -- decrease the input message refcount
+    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------

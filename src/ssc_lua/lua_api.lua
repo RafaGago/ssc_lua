@@ -72,7 +72,7 @@ ffi.cdef[[
     u16       mask_size,
     toffset   us
     );
-
+  void sim_consume_all (void* h);
   void sim_drop_input_head_private (void* h);
 ]]
 --------------------------------------------------------------------------------
@@ -233,6 +233,11 @@ function sim_consume_match_mask (match, mask)
   return ret
 end
 --------------------------------------------------------------------------------
+function sim_consume_all()
+  ffi.C.sim_consume_all (current_fiber_handle)
+  coroutine.yield()
+end
+--------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 sim_sem         = {}
 sim_sem.__index = sim_sem
@@ -255,14 +260,14 @@ end
 --------------------------------------------------------------------------------
 function sim_sem:timed_wait (timeout_us)
   self.sem  = self.sem - 1
-  local ret = true
+  local unexpired = true
   if self.sem < 0 then
-    ret = sim_wait (self.id, timeout_us)
-    if ret == false then
+    unexpired = sim_wait (self.id, timeout_us)
+    if unexpired == false then
       self.sem = self.sem + 1
     end
   end
-  return ret
+  return unexpired
 end
 --------------------------------------------------------------------------------
 function sim_sem:reset()
