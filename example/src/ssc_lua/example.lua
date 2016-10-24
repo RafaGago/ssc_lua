@@ -3,29 +3,27 @@
 -- Produce
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "produce error", function()
+  sim_set_fiber_as_produce_only()
     while true do
     sim_produce_error (0)
     sim_delay (10000000)
-    -- fibers not reading the queue must periodically call "sim_consume_all" to
-    -- decrease the input message refcount
-    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "produce bytes", function()
   local bytes = string.char (0x00, 0x01, 0x02, 0x03)
+  sim_set_fiber_as_produce_only()
   while true do
     sim_produce_bytes (bytes)
     sim_delay (10000000)
-    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "produce string", function()
+  sim_set_fiber_as_produce_only()
   while true do
     sim_produce_string ("hello world!")
     sim_delay (10000000)
-    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
@@ -101,12 +99,12 @@ end)
 -- Timestamps
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "timestamps", function()
+  sim_set_fiber_as_produce_only()
   local expired = sim_timestamp_get()
   while true do
     if sim_timestamp_is_expired (sim_timestamp_get(), expired) then
       sim_produce_string ("timestamp expired")
       expired = sim_timestamp_add_usec (sim_timestamp_get(), 10000000)
-      sim_consume_all()
     end
     sim_delay (100000)
   end
@@ -128,14 +126,12 @@ sim_register_fiber (1, "signal sem 1 on ffff match", function()
 end)
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "wait on sem 1", function()
+  sim_set_fiber_as_produce_only()
   while true do
-    local unexpired = sem:timed_wait (200000)
+    local unexpired = sem:timed_wait (1000000)
     if unexpired then
       sim_produce_string ("semaphore signal received")
     end
-    -- fibers not reading the queue must periodically call "sim_consume_all" to
-    -- decrease the input message refcount
-    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------

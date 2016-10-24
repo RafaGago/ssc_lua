@@ -73,6 +73,7 @@ ffi.cdef[[
     toffset   us
     );
   void sim_consume_all (void* h);
+  void sim_set_fiber_as_produce_only (void* h);
   void sim_drop_input_head_private (void* h);
 ]]
 --------------------------------------------------------------------------------
@@ -235,6 +236,11 @@ end
 --------------------------------------------------------------------------------
 function sim_consume_all()
   ffi.C.sim_consume_all (current_fiber_handle)
+  coroutine.yield()
+end
+--------------------------------------------------------------------------------
+function sim_set_fiber_as_produce_only()
+  ffi.C.sim_set_fiber_as_produce_only (current_fiber_handle)
   coroutine.yield()
 end
 --------------------------------------------------------------------------------
