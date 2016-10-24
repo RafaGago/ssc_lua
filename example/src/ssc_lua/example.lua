@@ -6,6 +6,9 @@ sim_register_fiber (1, "produce error", function()
     while true do
     sim_produce_error (0)
     sim_delay (10000000)
+    -- fibers not reading the queue must periodically call "sim_consume_all" to
+    -- decrease the input message refcount
+    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
@@ -14,6 +17,7 @@ sim_register_fiber (1, "produce bytes", function()
   while true do
     sim_produce_bytes (bytes)
     sim_delay (10000000)
+    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
@@ -21,6 +25,7 @@ sim_register_fiber (1, "produce string", function()
   while true do
     sim_produce_string ("hello world!")
     sim_delay (10000000)
+    sim_consume_all()
   end
 end)
 --------------------------------------------------------------------------------
@@ -101,6 +106,7 @@ sim_register_fiber (1, "timestamps", function()
     if sim_timestamp_is_expired (sim_timestamp_get(), expired) then
       sim_produce_string ("timestamp expired")
       expired = sim_timestamp_add_usec (sim_timestamp_get(), 10000000)
+      sim_consume_all()
     end
     sim_delay (100000)
   end
