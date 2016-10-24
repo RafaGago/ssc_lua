@@ -47,7 +47,7 @@ typedef enum fiber_ops_e {
   fop_timed_consume,
   fop_timed_consume_match,
   fop_timed_consume_match_mask,
-  fop_sim_consume_all,
+  fop_consume_all,
   fop_set_fiber_as_produce_only,
   fop_drop_input_head_private,
 
@@ -356,7 +356,7 @@ BL_VISIBILITY_DEFAULT void sim_timed_consume_match_mask(
 BL_VISIBILITY_DEFAULT void sim_consume_all (void* h)
 {
   ssc_lua_handle* lh = (ssc_lua_handle*) h;
-  lh->op = fop_sim_consume_all;
+  lh->op = fop_consume_all;
 }
 /*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_set_fiber_as_produce_only (void* h)
@@ -499,7 +499,7 @@ static void fiber_function(
       *lh.d.consume_tmm.dat_size = memr16_size (r);
       break;
     }
-    case fop_sim_consume_all: {
+    case fop_consume_all: {
       ssc_drop_all_input (h);
       break;
     }

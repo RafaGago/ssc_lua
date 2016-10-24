@@ -4,7 +4,7 @@
 --------------------------------------------------------------------------------
 sim_register_fiber (1, "produce error", function()
   sim_set_fiber_as_produce_only()
-    while true do
+  while true do
     sim_produce_error (0)
     sim_delay (10000000)
   end
