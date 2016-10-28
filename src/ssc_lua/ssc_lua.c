@@ -49,6 +49,7 @@ typedef enum fiber_ops_e {
   fop_timed_consume_match_mask,
   fop_consume_all,
   fop_set_fiber_as_produce_only,
+  fop_set_fiber_as_real_time,
   fop_drop_input_head_private,
 
   fop_out_of_scope,
@@ -365,6 +366,12 @@ BL_VISIBILITY_DEFAULT void sim_set_fiber_as_produce_only (void* h)
   lh->op = fop_set_fiber_as_produce_only;
 }
 /*----------------------------------------------------------------------------*/
+BL_VISIBILITY_DEFAULT void sim_set_fiber_as_real_time (void* h)
+{
+  ssc_lua_handle* lh = (ssc_lua_handle*) h;
+  lh->op = fop_set_fiber_as_real_time;
+}
+/*----------------------------------------------------------------------------*/
 BL_VISIBILITY_DEFAULT void sim_drop_input_head_private (void* h)
 {
   ssc_lua_handle* lh = (ssc_lua_handle*) h;
@@ -505,6 +512,10 @@ static void fiber_function(
     }
     case fop_set_fiber_as_produce_only: {
       ssc_set_fiber_as_produce_only (h);
+      break;
+    }
+    case fop_set_fiber_as_real_time: {
+      ssc_set_fiber_as_real_time (h);
       break;
     }
     case fop_drop_input_head_private: {
