@@ -7,4 +7,7 @@ dependencies/code/LuaJIT-2.0.4
 eclipse/.metadata
 eclipse/RemoteSystemsTempFiles
 src/ssc_lua/lua_api.c
+dep
+*install/
+ninja_build
 

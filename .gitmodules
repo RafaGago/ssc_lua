@@ -1,4 +1,9 @@
-[submodule "dependencies/ssc"]
-	path = dependencies/ssc
+[submodule "subprojects/ssc"]
+	path = subprojects/ssc
 	url = https://github.com/RafaGago/ssc.git
-  branch = master
+[submodule "gitmodules/luajit"]
+	path = gitmodules/luajit
+	url = http://luajit.org/git/luajit-2.0.git
+[submodule "subprojects/base_library"]
+	path = subprojects/base_library
+	url = https://github.com/RafaGago/base_library.git
