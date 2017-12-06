@@ -10,3 +10,9 @@ option(
      value       : false,
      description : 'compile as shared libraries'
      )
+option(
+    'install_luajit',
+     type        : 'boolean',
+     value       : false,
+     description : 'installs the in-project compiled LuaJIT version'
+     )

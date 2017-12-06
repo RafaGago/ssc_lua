@@ -27,6 +27,7 @@ luajit_path = proj_dir + '/dep/install/lib/' + luajit_lib
 
 host_system = host_machine.system()
 if host_system != 'windows'
+    # It may be a better way
     message ('building LuaJIT')
     res = run_command(
         build_helpers_dir + '/run_in_tree_make_project_target.sh',
@@ -50,6 +51,15 @@ if host_system != 'windows'
         )
     if res.returncode() != 0
       error (res.stderr().strip())
+    endif
+    message(target_machine.cpu_family())
+    message(target_machine.cpu())
+    message(target_machine.system())
+    message(target_machine.endian())
+
+    if get_option ('install_luajit')
+        install_subdir(proj_dir + '/dep/install/include', install_dir: '')
+        install_subdir(proj_dir + '/dep/install/lib', install_dir: '')
     endif
 endif
 
@@ -142,7 +152,8 @@ ssc_lua_lib = build_target(
     target_type         : libtype,
     include_directories : include_dirs,
     c_args              : cflags + lib_cflags,
-    install             : true
+    install             : true,
+    install_dir         : 'lib'
     )
 pkg_mod.generate(
     libraries   : ssc_lua_lib,
