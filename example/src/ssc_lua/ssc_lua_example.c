@@ -127,6 +127,7 @@ int main (int argc, char const* argv[])
   pd.before_main_script = nullptr;
   pd.after_main_script  = nullptr;
   pd.on_init_context    = nullptr;
+  pd.min_stack_bytes    = 512 * 1024 * 1024;
   bl_err err            = ssc_create (&p.sim, "", &pd);
   if (err) {
     fprintf (stderr, "unable to create ssc_lua: %s\n", bl_err_to_str (err));

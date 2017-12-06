@@ -20,9 +20,6 @@
 #include <lualib.h>
 #include <lauxlib.h>
 
-#ifndef SSC_LUA_FIBER_STACK_BYTES
-  #define SSC_LUA_FIBER_STACK_BYTES (64 * 1024)
-#endif
 /*----------------------------------------------------------------------------*/
 /* Types */
 /*----------------------------------------------------------------------------*/
@@ -655,7 +652,7 @@ SSC_EXPORT
     ssc_fiber_cfg cfg = ssc_fiber_cfg_rv(
       it->gid, fiber_function, nullptr, nullptr, (void*) it
       );
-    cfg.min_stack_size = SSC_LUA_FIBER_STACK_BYTES;
+    cfg.min_stack_size = pd->min_stack_bytes;
     if (ssc_add_fiber (h, &cfg) != bl_ok) {
       log_error ("error adding fiber");
       goto destroy_lua_fibers;
