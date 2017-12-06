@@ -167,6 +167,8 @@ typedef struct sim_tstamp {
   u8 t[sizeof (tstamp)];
 }
 sim_tstamp;
+
+BL_VISIBILITY_DEFAULT void linker_visibility_test (void) {}
 /*----------------------------------------------------------------------------*/
 /* C Api impl */
 /*----------------------------------------------------------------------------*/
@@ -564,12 +566,30 @@ SSC_EXPORT
 #ifndef DSRST_LUA_NO_API_FUNCTIONS
   /*open and execute api*/
   int status = luaL_loadstring (gc->lua, ssc_lua_api);
-  assert (status == 0);
-  status     = lua_pcall (gc->lua, 0, 0, 0);
-  assert (status == 0);
+  if (status != 0) {
+    fprintf(
+      stderr, "Unable to load LUA API string:\n%s\n", lua_tostring (gc->lua, -1)
+      );
+    goto close;
+  }
+  if (lua_pcall (gc->lua, 0, 0, 0) != 0) {
+    fprintf(stderr, "LUA SSC API error:\n%s\n", lua_tostring (gc->lua, -1));
+    goto close;
+  }
+  /*test ffi.C linker visibility to this file's functions*/
+  lua_getglobal (gc->lua, "linker_visibility_test");
+  if (lua_pcall (gc->lua, 0, 0, 0) != 0) {
+    fprintf(
+          stderr,
+          "LuaJIT ffi linker visibility test failed (Linux static linking without -Wl,-E?). reported error:\n%s\n",
+          lua_tostring (gc->lua, -1)
+          );
+    goto close;
+  }
 #else
   int status;
 #endif
+
   /*letting the user to modify the lua state before running the main script*/
   if (pd->before_main_script) {
     status = pd->before_main_script (gc->lua, pd->on_init_context);
@@ -682,6 +702,7 @@ SSC_EXPORT
     log_notice ("script without ssc_setup");
     lua_pop (gc->lua, 1);
   }
+
   err          = bl_ok;
   *sim_context = (void*) gc;
   return err;

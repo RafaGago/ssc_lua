@@ -76,8 +76,9 @@ ffi.cdef[[
   void sim_set_fiber_as_produce_only (void* h);
   void sim_set_fiber_as_real_time (void* h);
   void sim_drop_input_head_private (void* h);
+
+  void linker_visibility_test (void);
 ]]
---------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 -- Don't be tempted to try to optimize these many coroutine.yield() calls
 -- unfortunately LuaJIT can't yield within a ffi.C function call
@@ -304,6 +305,10 @@ function sim_register_fiber(group, name_str, fiber)
   end
   table.insert (ssc_fibers_private[group], {name_str, fiber})
   ssc_fibers_private_last_group = group
+end
+--------------------------------------------------------------------------------
+function linker_visibility_test()
+  ffi.C.linker_visibility_test()
 end
 --------------------------------------------------------------------------------
 

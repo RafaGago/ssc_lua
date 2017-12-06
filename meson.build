@@ -105,6 +105,9 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
     if get_option ('pic_statlibs') and libtype == 'static_library'
         lib_cflags += ['-fPIC']
     endif
+    # As per LuaJIT docs
+    exec_link_args = ['-Wl,-E'] + exec_link_args
+    test_link_args = ['-Wl,-E'] + test_link_args
 endif
 
 libmath = cc.find_library ('m', required : false)
