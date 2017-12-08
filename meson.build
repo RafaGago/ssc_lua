@@ -52,10 +52,6 @@ if host_system != 'windows'
     if res.returncode() != 0
       error (res.stderr().strip())
     endif
-    message(target_machine.cpu_family())
-    message(target_machine.cpu())
-    message(target_machine.system())
-    message(target_machine.endian())
 
     if get_option ('install_luajit')
         install_subdir(proj_dir + '/dep/install/include', install_dir: '')
