@@ -551,14 +551,14 @@ SSC_EXPORT
   *sim_context            = nullptr;
 
   if (!gc) {
-    return bl_alloc;
+    return bl_mkerr (bl_alloc);
   }
   gc->alloc  = get_default_alloc();
   bl_err err = lua_fibers_init (&gc->fibers, &gc->alloc);
-  if (err) {
+  if (err.bl) {
     goto global_free;
   }
-  err     = bl_error;
+  err     = bl_mkerr (bl_error);
   gc->lua = luaL_newstate();
   luaL_openlibs (gc->lua);
   luaopen_pack (gc->lua);
@@ -673,7 +673,7 @@ SSC_EXPORT
       it->gid, fiber_function, nullptr, nullptr, (void*) it
       );
     cfg.min_stack_size = pd->min_stack_bytes;
-    if (ssc_add_fiber (h, &cfg) != bl_ok) {
+    if (ssc_add_fiber (h, &cfg).bl != bl_ok) {
       log_error ("error adding fiber");
       goto destroy_lua_fibers;
     }
@@ -703,7 +703,7 @@ SSC_EXPORT
     lua_pop (gc->lua, 1);
   }
 
-  err          = bl_ok;
+  err          = bl_mkok();
   *sim_context = (void*) gc;
   return err;
 

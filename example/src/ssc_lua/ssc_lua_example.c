@@ -6,8 +6,6 @@
 #include <ssc/simulator/simulator.h>
 #include <ssc_lua/ssc_lua.h>
 
-static define_bl_err_to_str()
-
 /*---------------------------------------------------------------------------*/
 typedef struct program {
   ssc*   sim;
@@ -57,7 +55,7 @@ void process_read_message (program* p, ssc_output_data* od)
     bl_err      err;
     char const* errstr;
     ssc_output_read_as_error (od, &err, &errstr);
-    printf ("<- err: %s, errstr: %s\n", bl_err_to_str (err), errstr);
+    printf ("<- err: %s, errstr: %s\n", bl_strerror (err), errstr);
     break;
   }
   default: break;
@@ -67,9 +65,8 @@ void process_read_message (program* p, ssc_output_data* od)
 int write_console (void* context)
 {
   program* p = (program*) context;
-  size_t size;
   while (p->running) {
-    char* line = fgets (&p->send, arr_elems (p->send), stdin);
+    char* line = fgets (p->send, arr_elems (p->send), stdin);
     if (!line) {
       fprintf (stderr, "fgets failed\n");
       continue;
@@ -100,11 +97,11 @@ int write_console (void* context)
     }
     print_time (p, bl_get_tstamp());
     bl_err err = ssc_write (p->sim, 0, mem, (u16) ret);
-    if (!err) {
+    if (!err.bl) {
       printf ("-> %s\n", line);
     }
     else {
-      fprintf (stderr, "-> ssc_write failed: %s\n", bl_err_to_str (err));
+      fprintf (stderr, "-> ssc_write failed: %s\n", bl_strerror (err));
     }
   }
   return -1;
@@ -129,14 +126,14 @@ int main (int argc, char const* argv[])
   pd.on_init_context    = nullptr;
   pd.min_stack_bytes    = 512 * 1024 * 1024;
   bl_err err            = ssc_create (&p.sim, "", &pd);
-  if (err) {
-    fprintf (stderr, "unable to create ssc_lua: %s\n", bl_err_to_str (err));
-    return (int) err;
+  if (err.bl) {
+    fprintf (stderr, "unable to create ssc_lua: %s\n", bl_strerror (err));
+    return (int) err.bl;
   }
   p.startup = bl_get_tstamp();
   err       = ssc_run_setup (p.sim);
-  if (err) {
-    fprintf (stderr, "unable to run ssc_lua setup: %s\n", bl_err_to_str (err));
+  if (err.bl) {
+    fprintf (stderr, "unable to run ssc_lua setup: %s\n", bl_strerror (err));
     goto destroy;
   }
   printf(
@@ -146,7 +143,7 @@ int main (int argc, char const* argv[])
     "-------------------------------------------------------------\n"
     );
   bl_thread thr;
-  int thr_err = bl_thread_init (&thr, write_console, &p);
+  int thr_err = bl_thread_init (&thr, write_console, &p).bl;
   if (thr_err != 0) {
     fprintf (stderr, "unable to start console thread\n");
     goto teardown;
@@ -154,7 +151,7 @@ int main (int argc, char const* argv[])
   ssc_output_data od[16];
   while (p.running) {
     err = ssc_run_some (p.sim, 100);
-    if (err && err != bl_timeout) {
+    if (err.bl && err.bl != bl_timeout) {
       /*TODO*/
     }
     uword read_msgs;
@@ -168,6 +165,6 @@ teardown:
   ssc_run_teardown (p.sim);
 destroy:
   ssc_destroy (p.sim);
-  return (int) err;
+  return (int) err.bl;
 }
 /*---------------------------------------------------------------------------*/
