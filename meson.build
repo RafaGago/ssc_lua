@@ -112,8 +112,8 @@ if cc.get_id() == 'gcc' or cc.get_id() == 'clang'
         lib_cflags += ['-fPIC']
     endif
     # As per LuaJIT docs
-    exec_link_args = ['-Wl,-E'] + exec_link_args
-    test_link_args = ['-Wl,-E'] + test_link_args
+    exec_link_args = ['-Wl,-E', '-no-pie'] + exec_link_args
+    test_link_args = ['-Wl,-E', '-no-pie'] + test_link_args
 endif
 
 libmath = cc.find_library ('m', required : false)
@@ -178,3 +178,15 @@ executable(
     c_args              : cflags,
     dependencies        : [ threads, libmath, libdl ]
 )
+
+configure_file(
+    input: 'test/src/ssc_lua/queue_match_test.lua',
+    output:'queue_match_test.lua',
+    copy: true
+    )
+
+configure_file(
+    input: 'example/src/ssc_lua/example.lua',
+    output:'example.lua',
+    copy: true
+    )
