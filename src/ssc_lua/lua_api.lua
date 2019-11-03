@@ -1,76 +1,76 @@
 --------------------------------------------------------------------------------
 ffi = require("ffi")
 ffi.cdef[[
-  typedef uint8_t   u8;
+  typedef uint8_t   bl_u8;
   typedef int8_t    i8;
-  typedef uint16_t  u16;
+  typedef uint16_t  bl_u16;
   typedef int16_t   i16;
   typedef uint32_t  u32;
   typedef int32_t   i32;
   typedef uint64_t  u64;
   typedef int64_t   i64;
-  typedef uintptr_t uword;
-  typedef intptr_t  word;
+  typedef uintptr_t bl_uword;
+  typedef intptr_t  bl_word;
   typedef void*     ssc_handle;
-  typedef uword     bl_err;
-  typedef u32       toffset;
+  typedef bl_uword     bl_err;
+  typedef u32       bl_timeoft32;
 
-  typedef struct sim_tstamp {
-    u8 t[sizeof (u32)];
+  typedef struct sim_bl_timept32 {
+    bl_u8 t[sizeof (u32)];
   }
-  sim_tstamp;
+  sim_bl_timept32;
 
   void sim_yield (void* h);
-  void sim_delay (void* h, toffset us);
+  void sim_delay (void* h, bl_timeoft32 us);
 
-  sim_tstamp sim_timestamp_get (void* h);
-  sim_tstamp sim_timestamp_add_usec (sim_tstamp t, toffset us);
-  toffset    sim_timestamp_diff_usec (sim_tstamp future, sim_tstamp past);
-  bool       sim_timestamp_is_expired (sim_tstamp cmp, sim_tstamp deadline);
+  sim_bl_timept32 sim_timestamp_get (void* h);
+  sim_bl_timept32 sim_timestamp_add_usec (sim_bl_timept32 t, bl_timeoft32 us);
+  bl_timeoft32    sim_timestamp_diff_usec (sim_bl_timept32 future, sim_bl_timept32 past);
+  bool       sim_timestamp_is_expired (sim_bl_timept32 cmp, sim_bl_timept32 deadline);
 
-  void sim_wake (void* h, u16 wait_id, u16 count);
-  bool sim_wait (void* h, bool* timedout, u16 wait_id, toffset us);
+  void sim_wake (void* h, bl_u16 wait_id, bl_u16 count);
+  bool sim_wait (void* h, bool* timedout, bl_u16 wait_id, bl_timeoft32 us);
 
-  void sim_produce_bytes (void* h, u8 const* dat, u16 dat_size);
+  void sim_produce_bytes (void* h, bl_u8 const* dat, bl_u16 dat_size);
   void sim_produce_error (void* h, bl_err err);
-  void sim_produce_string (void* h, char const* str, u16 str_size_no_null);
+  void sim_produce_string (void* h, char const* str, bl_u16 str_size_no_null);
 
-  void sim_consume (void* h, u8** dat, u16* dat_size);
+  void sim_consume (void* h, bl_u8** dat, bl_u16* dat_size);
   void sim_consume_match(
     void*     h,
-    u8**      dat,
-    u16*      dat_size,
-    u8 const* match,
-    u16       match_size
+    bl_u8**      dat,
+    bl_u16*      dat_size,
+    bl_u8 const* match,
+    bl_u16       match_size
     );
   void sim_consume_match_mask(
     void*     h,
-    u8**      dat,
-    u16*      dat_size,
-    u8 const* match,
-    u16       match_size,
-    u8 const* mask,
-    u16       mask_size
+    bl_u8**      dat,
+    bl_u16*      dat_size,
+    bl_u8 const* match,
+    bl_u16       match_size,
+    bl_u8 const* mask,
+    bl_u16       mask_size
     );
 
-  void sim_timed_consume (void* h, u8** dat, u16* dat_size, toffset us);
+  void sim_timed_consume (void* h, bl_u8** dat, bl_u16* dat_size, bl_timeoft32 us);
   void sim_timed_consume_match(
     void*     h,
-    u8**      dat,
-    u16*      dat_size,
-    u8 const* match,
-    u16       match_size,
-    toffset   us
+    bl_u8**      dat,
+    bl_u16*      dat_size,
+    bl_u8 const* match,
+    bl_u16       match_size,
+    bl_timeoft32   us
     );
   void sim_timed_consume_match_mask(
     void*     h,
-    u8**      dat,
-    u16*      dat_size,
-    u8 const* match,
-    u16       match_size,
-    u8 const* mask,
-    u16       mask_size,
-    toffset   us
+    bl_u8**      dat,
+    bl_u16*      dat_size,
+    bl_u8 const* match,
+    bl_u16       match_size,
+    bl_u8 const* mask,
+    bl_u16       mask_size,
+    bl_timeoft32   us
     );
   void sim_consume_all (void* h);
   void sim_set_fiber_as_produce_only (void* h);
@@ -94,14 +94,14 @@ function sim_delay (us)
 end
 --------------------------------------------------------------------------------
 function sim_timestamp_get()
-  local res = ffi.new ("sim_tstamp[1]")
+  local res = ffi.new ("sim_bl_timept32[1]")
   res[0]    = ffi.C.sim_timestamp_get (current_fiber_handle)
   return res
 end
 --------------------------------------------------------------------------------
-function sim_timestamp_add_usec (tstamp, us)
-  local res = ffi.new ("sim_tstamp[1]")
-  res[0]    = ffi.C.sim_timestamp_add_usec (tstamp[0], us)
+function sim_timestamp_add_usec (bl_timept32, us)
+  local res = ffi.new ("sim_bl_timept32[1]")
+  res[0]    = ffi.C.sim_timestamp_add_usec (bl_timept32[0], us)
   return res
 end
 --------------------------------------------------------------------------------
@@ -141,8 +141,8 @@ function sim_produce_string (str)
 end
 --------------------------------------------------------------------------------
 function sim_timed_consume (timeout_us)
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_timed_consume (current_fiber_handle, dat, dat_size, timeout_us)
   coroutine.yield()
   local ret
@@ -155,8 +155,8 @@ function sim_timed_consume (timeout_us)
 end
 --------------------------------------------------------------------------------
 function sim_timed_consume_match (match, timeout_us)
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_timed_consume_match(
     current_fiber_handle, dat, dat_size, match, match:len(), timeout_us
     )
@@ -171,8 +171,8 @@ function sim_timed_consume_match (match, timeout_us)
 end
 --------------------------------------------------------------------------------
 function sim_timed_consume_match_mask (match, mask, timeout_us)
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_timed_consume_match_mask(
     current_fiber_handle,
     dat,
@@ -194,8 +194,8 @@ function sim_timed_consume_match_mask (match, mask, timeout_us)
 end
 --------------------------------------------------------------------------------
 function sim_consume()
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_consume (current_fiber_handle, dat, dat_size)
   coroutine.yield()
   ret = ffi.string (dat[0], dat_size[0])
@@ -205,8 +205,8 @@ function sim_consume()
 end
 --------------------------------------------------------------------------------
 function sim_consume_match (match)
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_consume_match(
     current_fiber_handle, dat, dat_size, match, match:len()
     )
@@ -218,8 +218,8 @@ function sim_consume_match (match)
 end
 --------------------------------------------------------------------------------
 function sim_consume_match_mask (match, mask)
-  local dat      = ffi.new ("u8*[1]")
-  local dat_size = ffi.new ("u16[1]")
+  local dat      = ffi.new ("bl_u8*[1]")
+  local dat_size = ffi.new ("bl_u16[1]")
   ffi.C.sim_consume_match_mask(
     current_fiber_handle,
     dat,

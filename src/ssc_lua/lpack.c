@@ -17,11 +17,11 @@ Original code is "#if 0"'ed
 #define	OP_ZSTRING	'z'		/* zero-terminated string */
 #if 0
 #define	OP_BSTRING	'p'		/* string preceded by length byte */
-#define	OP_WSTRING	'P'		/* string preceded by length word */
+#define	OP_WSTRING	'P'		/* string preceded by length bl_word */
 #define OP_SSTRING  'a'   /* string preceded by length size_t */
 #else
-#define OP_U8_STRING  's'   /* safe string (preceded by u8) */
-#define OP_U16_STRING  'S'   /* safe string (preceded by u16) */
+#define OP_U8_STRING  's'   /* safe string (preceded by bl_u8) */
+#define OP_U16_STRING  'S'   /* safe string (preceded by bl_u16) */
 #define OP_U32_STRING  'a'   /* safe string (preceded by u32) */
 #endif
 
@@ -41,9 +41,9 @@ Original code is "#if 0"'ed
 #else
 #include <bl/base/integer.h>
 #define	OP_BYTE	  	     'b' /* i8 */
-#define	OP_UBYTE		     'B' /* u8 */
+#define	OP_UBYTE		     'B' /* bl_u8 */
 #define	OP_BYTE_PAIR     'p' /* i16 */
-#define	OP_UBYTE_PAIR    'P' /* u16 */
+#define	OP_UBYTE_PAIR    'P' /* bl_u16 */
 #define	OP_BYTE_QUARTET  'q' /* i32 */
 #define	OP_UBYTE_QUARTET 'Q' /* u32 */
 #define	OP_BYTE_OCTET    'o' /* i64 */
@@ -174,9 +174,9 @@ static int l_unpack(lua_State *L) 		/** unpack(s,f,[init]) */
    UNPACKSTRING(OP_WSTRING, unsigned short)
    UNPACKSTRING(OP_SSTRING, size_t)
 #else
-   UNPACKSTRING(OP_U8_STRING, u8)
-   UNPACKSTRING(OP_U16_STRING, u16)
-   UNPACKSTRING(OP_U32_STRING, u32)
+   UNPACKSTRING(OP_U8_STRING, bl_u8)
+   UNPACKSTRING(OP_U16_STRING, bl_u16)
+   UNPACKSTRING(OP_U32_STRING, bl_u32)
 #endif
    UNPACKNUMBER(OP_NUMBER, lua_Number)
    UNPACKNUMBER(OP_DOUBLE, double)
@@ -191,14 +191,14 @@ static int l_unpack(lua_State *L) 		/** unpack(s,f,[init]) */
    UNPACKNUMBER(OP_LONG, long)
    UNPACKNUMBER(OP_ULONG, unsigned long)
 #else
-   UNPACKNUMBER(OP_BYTE, i8)
-   UNPACKNUMBER(OP_UBYTE, u8)
-   UNPACKNUMBER(OP_BYTE_PAIR, i16)
-   UNPACKNUMBER(OP_UBYTE_PAIR, u16)
-   UNPACKNUMBER(OP_BYTE_QUARTET, i32)
-   UNPACKNUMBER(OP_UBYTE_QUARTET, u32)
-   UNPACKNUMBER(OP_BYTE_OCTET, i64)
-   UNPACKNUMBER(OP_UBYTE_OCTET, u64)
+   UNPACKNUMBER(OP_BYTE, bl_i8)
+   UNPACKNUMBER(OP_UBYTE, bl_u8)
+   UNPACKNUMBER(OP_BYTE_PAIR, bl_i16)
+   UNPACKNUMBER(OP_UBYTE_PAIR, bl_u16)
+   UNPACKNUMBER(OP_BYTE_QUARTET, bl_i32)
+   UNPACKNUMBER(OP_UBYTE_QUARTET, bl_u32)
+   UNPACKNUMBER(OP_BYTE_OCTET, bl_i64)
+   UNPACKNUMBER(OP_UBYTE_OCTET, bl_u64)
 #endif
    case ' ': case ',':
     break;
@@ -273,9 +273,9 @@ static int l_pack(lua_State *L) 		/** pack(f,...) */
    PACKSTRING(OP_WSTRING, unsigned short)
    PACKSTRING(OP_SSTRING, size_t)
 #else
-   PACKSTRING(OP_U8_STRING, u8)
-   PACKSTRING(OP_U16_STRING, u16)
-   PACKSTRING(OP_U32_STRING, u32)
+   PACKSTRING(OP_U8_STRING, bl_u8)
+   PACKSTRING(OP_U16_STRING, bl_u16)
+   PACKSTRING(OP_U32_STRING, bl_u32)
 #endif
    PACKNUMBER(OP_NUMBER, lua_Number)
    PACKNUMBER(OP_DOUBLE, double)
@@ -290,14 +290,14 @@ static int l_pack(lua_State *L) 		/** pack(f,...) */
    PACKNUMBER(OP_LONG, long)
    PACKNUMBER(OP_ULONG, unsigned long)
 #else
-   PACKNUMBER(OP_BYTE, i8)
-   PACKNUMBER(OP_UBYTE, u8)
-   PACKNUMBER(OP_BYTE_PAIR, i16)
-   PACKNUMBER(OP_UBYTE_PAIR, u16)
-   PACKNUMBER(OP_BYTE_QUARTET, i32)
-   PACKNUMBER(OP_UBYTE_QUARTET, u32)
-   PACKNUMBER(OP_BYTE_OCTET, i64)
-   PACKNUMBER(OP_UBYTE_OCTET, u64)
+   PACKNUMBER(OP_BYTE, bl_i8)
+   PACKNUMBER(OP_UBYTE, bl_u8)
+   PACKNUMBER(OP_BYTE_PAIR, bl_i16)
+   PACKNUMBER(OP_UBYTE_PAIR, bl_u16)
+   PACKNUMBER(OP_BYTE_QUARTET, bl_i32)
+   PACKNUMBER(OP_UBYTE_QUARTET, bl_u32)
+   PACKNUMBER(OP_BYTE_OCTET, bl_i64)
+   PACKNUMBER(OP_UBYTE_OCTET, bl_u64)
 #endif
    case ' ': case ',':
     break;

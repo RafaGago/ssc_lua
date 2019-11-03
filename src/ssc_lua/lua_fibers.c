@@ -6,32 +6,32 @@
 #include <ssc_lua/lua_fibers.h>
 /*----------------------------------------------------------------------------*/
 bl_err lua_fibers_init(
-  lua_fibers* f, alloc_tbl const* alloc
+  lua_fibers* f, bl_alloc_tbl const* alloc
   )
 {
   return lua_fiber_list_init (&f->list, 0, alloc);
 }
 /*----------------------------------------------------------------------------*/
 void lua_fibers_destroy(
-  lua_fibers* f, alloc_tbl const* alloc
+  lua_fibers* f, bl_alloc_tbl const* alloc
   )
 {
-  dynarray_foreach (lua_fiber_list, lua_fiber_data, &f->list, it) {
+  bl_dynarray_foreach (lua_fiber_list, lua_fiber_data, &f->list, it) {
     bl_dealloc (alloc, it->name);
   }
   lua_fiber_list_destroy (&f->list, alloc);
 }
 /*----------------------------------------------------------------------------*/
 lua_fiber_data* lua_fibers_add(
-  lua_fibers*      f,
-  lua_State*       thread,
-  int              thread_ref,
-  ssc_group_id     gid,
-  char const*      name,
-  alloc_tbl const* alloc
+  lua_fibers*         f,
+  lua_State*          thread,
+  int                 thread_ref,
+  ssc_group_id        gid,
+  char const*         name,
+  bl_alloc_tbl const* alloc
   )
 {
-  uword len = strlen (name) + 1;
+  bl_uword len = strlen (name) + 1;
   char* name_copy = (char*) bl_alloc (alloc, len);
   if (!name_copy) {
     return nullptr;

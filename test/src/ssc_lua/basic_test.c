@@ -19,8 +19,8 @@ context;
 /*---------------------------------------------------------------------------*/
 char* str_alloc_append_to_script_path (char const* name)
 {
-  uword pathlen = strlen (script_path);
-  uword namelen = strlen (name);
+  bl_uword pathlen = strlen (script_path);
+  bl_uword namelen = strlen (name);
   char* str     = (char*) malloc (pathlen + namelen + 1);
   assert_non_null (str);
   memcpy (str, script_path, pathlen);
@@ -68,15 +68,15 @@ static int test_teardown (void **state)
 static void queue_match_test (void **state)
 {
   /*the simulation code for this test is on "queue_match_test.lua"*/
-  const u8 expected_req[]   = {0x03, 0x01, 0x01, 0x00};
-  const u8 filter_out_req[] = {0x03, 0x00, 0x01, 0x00};
-  const u8 expected_resp[]  = {0x00, 0x01, 0x02, 0x03};
-  context* ctx              = (context*) *state;
+  const bl_u8 expected_req[]   = {0x03, 0x01, 0x01, 0x00};
+  const bl_u8 filter_out_req[] = {0x03, 0x00, 0x01, 0x00};
+  const bl_u8 expected_resp[]  = {0x00, 0x01, 0x02, 0x03};
+  context* ctx = (context*) *state;
   ssc_output_data read_data;
-  uword           count;
+  bl_uword           count;
 
   /*send wrong message*/
-  u8* bs = ssc_alloc_write_bytestream (ctx->sim, sizeof filter_out_req);
+  bl_u8* bs = ssc_alloc_write_bytestream (ctx->sim, sizeof filter_out_req);
   assert_non_null (bs);
   memcpy (bs, filter_out_req, sizeof filter_out_req);
   bl_err err = ssc_write (ctx->sim, 0, bs, sizeof filter_out_req);
@@ -112,9 +112,9 @@ static void queue_match_test (void **state)
   assert_true (!err.bl);
   assert_true (ssc_output_is_bytes (&read_data));
   assert_true (ssc_output_is_dynamic (&read_data));
-  memr16 rd = ssc_output_read_as_bytes (&read_data);
-  assert_true (memr16_size (rd) == sizeof expected_resp);
-  assert_memory_equal (memr16_beg (rd), expected_resp, sizeof expected_resp);
+  bl_memr16 rd = ssc_output_read_as_bytes (&read_data);
+  assert_true (bl_memr16_size (rd) == sizeof expected_resp);
+  assert_memory_equal (bl_memr16_beg (rd), expected_resp, sizeof expected_resp);
   err = ssc_dealloc_read_data (ctx->sim, &read_data);
   assert (!err.bl);
 }

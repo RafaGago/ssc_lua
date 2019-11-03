@@ -33,7 +33,7 @@ typedef struct ssc_lua_passed_data {
   ssc_lua_on_init_func before_main_script;
   ssc_lua_on_init_func after_main_script;
   void*                on_init_context;
-  uword                min_stack_bytes;
+  bl_uword             min_stack_bytes;
 }
 ssc_lua_passed_data; /**/
 /*----------------------------------------------------------------------------*/
