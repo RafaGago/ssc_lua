@@ -42,11 +42,11 @@ static int test_setup (void **state, const char* script)
   pd.min_stack_bytes    = 512 * 1024 * 1024;
   bl_err err            = ssc_create (&c.sim, "", &pd);
   free ((char*) pd.main_script_path);
-  assert_true (!err.bl);
+  assert_true (!err.own);
   err = ssc_run_setup (c.sim);
-  assert_true (!err.bl);
+  assert_true (!err.own);
   *state = &c;
-  return (int) err.bl;
+  return (int) err.own;
 }
 /*---------------------------------------------------------------------------*/
 static int queue_match_test_setup (void **state)
@@ -60,8 +60,8 @@ static int test_teardown (void **state)
   if (!ctx) {
     return 1;
   }
-  assert_true (ssc_run_teardown (ctx->sim).bl == bl_ok);
-  assert_true (ssc_destroy (ctx->sim).bl == bl_ok);
+  assert_true (ssc_run_teardown (ctx->sim).own == bl_ok);
+  assert_true (ssc_destroy (ctx->sim).own == bl_ok);
   return 0;
 }
 /*---------------------------------------------------------------------------*/
@@ -80,43 +80,43 @@ static void queue_match_test (void **state)
   assert_non_null (bs);
   memcpy (bs, filter_out_req, sizeof filter_out_req);
   bl_err err = ssc_write (ctx->sim, 0, bs, sizeof filter_out_req);
-  assert_true (!err.bl);
+  assert_true (!err.own);
 
   /*run the simulator*/
   do {
     err = ssc_try_run_some (ctx->sim);
   }
-  while (err.bl != bl_nothing_to_do);
-  assert_true (err.bl == bl_nothing_to_do);
+  while (err.own != bl_nothing_to_do);
+  assert_true (err.own == bl_nothing_to_do);
 
   /*check that the message was filtered out*/
   err = ssc_read (ctx->sim, &count, &read_data, 1, 10000);
-  assert_true (err.bl == bl_timeout);
+  assert_true (err.own == bl_timeout);
 
   /*send the message that will match*/
   bs = ssc_alloc_write_bytestream (ctx->sim, sizeof expected_req);
   assert_non_null (bs);
   memcpy (bs, expected_req, sizeof expected_req);
   err = ssc_write (ctx->sim, 0, bs, sizeof expected_req);
-  assert_true (!err.bl);
+  assert_true (!err.own);
 
   /*run the simulator*/
   do {
     err = ssc_try_run_some (ctx->sim);
   }
-  while (err.bl != bl_nothing_to_do);
-  assert_true (err.bl == bl_nothing_to_do);
+  while (err.own != bl_nothing_to_do);
+  assert_true (err.own == bl_nothing_to_do);
 
   /*check that the right message triggered the sim semaphore signalling*/
   err = ssc_read (ctx->sim, &count, &read_data, 1, 10000);
-  assert_true (!err.bl);
+  assert_true (!err.own);
   assert_true (ssc_output_is_bytes (&read_data));
   assert_true (ssc_output_is_dynamic (&read_data));
   bl_memr16 rd = ssc_output_read_as_bytes (&read_data);
   assert_true (bl_memr16_size (rd) == sizeof expected_resp);
   assert_memory_equal (bl_memr16_beg (rd), expected_resp, sizeof expected_resp);
   err = ssc_dealloc_read_data (ctx->sim, &read_data);
-  assert (!err.bl);
+  assert (!err.own);
 }
 /*---------------------------------------------------------------------------*/
 static const struct CMUnitTest tests[] = {

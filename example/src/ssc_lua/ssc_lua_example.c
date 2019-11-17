@@ -96,7 +96,7 @@ int write_console (void* context)
     }
     print_time (p, bl_timept32_get());
     bl_err err = ssc_write (p->sim, 0, mem, (bl_u16) ret);
-    if (!err.bl) {
+    if (!err.own) {
       printf ("-> %s\n", line);
     }
     else {
@@ -125,13 +125,13 @@ int main (int argc, char const* argv[])
   pd.on_init_context    = nullptr;
   pd.min_stack_bytes    = 512 * 1024 * 1024;
   bl_err err            = ssc_create (&p.sim, "", &pd);
-  if (err.bl) {
+  if (err.own) {
     fprintf (stderr, "unable to create ssc_lua: %s\n", bl_strerror (err));
-    return (int) err.bl;
+    return (int) err.own;
   }
   p.startup = bl_timept32_get();
   err       = ssc_run_setup (p.sim);
-  if (err.bl) {
+  if (err.own) {
     fprintf (stderr, "unable to run ssc_lua setup: %s\n", bl_strerror (err));
     goto destroy;
   }
@@ -142,7 +142,7 @@ int main (int argc, char const* argv[])
     "-------------------------------------------------------------\n"
     );
   bl_thread thr;
-  int thr_err = bl_thread_init (&thr, write_console, &p).bl;
+  int thr_err = bl_thread_init (&thr, write_console, &p).own;
   if (thr_err != 0) {
     fprintf (stderr, "unable to start console thread\n");
     goto teardown;
@@ -150,7 +150,7 @@ int main (int argc, char const* argv[])
   ssc_output_data od[16];
   while (p.running) {
     err = ssc_run_some (p.sim, 100);
-    if (err.bl && err.bl != bl_timeout) {
+    if (err.own && err.own != bl_timeout) {
       /*TODO*/
     }
     bl_uword read_msgs;
@@ -164,6 +164,6 @@ teardown:
   ssc_run_teardown (p.sim);
 destroy:
   ssc_destroy (p.sim);
-  return (int) err.bl;
+  return (int) err.own;
 }
 /*---------------------------------------------------------------------------*/

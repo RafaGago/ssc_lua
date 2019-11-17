@@ -573,7 +573,7 @@ SSC_EXPORT
   }
   gc->alloc  = bl_get_default_alloc();
   bl_err err = lua_fibers_init (&gc->fibers, &gc->alloc);
-  if (err.bl) {
+  if (err.own) {
     goto global_free;
   }
   err     = bl_mkerr (bl_error);
@@ -691,7 +691,7 @@ SSC_EXPORT
       it->gid, fiber_function, nullptr, nullptr, (void*) it
       );
     cfg.min_stack_size = pd->min_stack_bytes;
-    if (ssc_add_fiber (h, &cfg).bl != bl_ok) {
+    if (ssc_add_fiber (h, &cfg).own != bl_ok) {
       log_error ("error adding fiber");
       goto destroy_lua_fibers;
     }

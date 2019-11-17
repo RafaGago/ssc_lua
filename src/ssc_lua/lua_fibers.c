@@ -36,7 +36,7 @@ lua_fiber_data* lua_fibers_add(
   if (!name_copy) {
     return nullptr;
   }
-  if (lua_fiber_list_grow (&f->list, 1, alloc).bl != bl_ok) {
+  if (lua_fiber_list_grow (&f->list, 1, alloc).own != bl_ok) {
     bl_dealloc (alloc, name_copy);
     return nullptr;
   }
